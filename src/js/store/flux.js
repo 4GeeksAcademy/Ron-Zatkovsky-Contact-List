@@ -1,3 +1,5 @@
+import { json } from "react-router";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -12,12 +14,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+			],
+			contacts:[]
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
+			},
+			getContactList: ()=>{
+				const store=getStore();
+				store.contacts===undefined?null:
+				fetch(`https://playground.4geeks.com/contact/agendas/RonZ`).then((response)=>{
+					return response.ok?response.json():null;
+				}).then((jsonData)=>{
+					getActions().setContacts(jsonData.contacts);
+					console.log(jsonData.contacts)
+				}).catch((e)=>{console.log(e)})
+			},
+			setContacts:(contactList)=>{
+				setStore({contacts:contactList})
 			},
 			loadSomeData: () => {
 				/**
